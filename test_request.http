@@ -1,0 +1,13 @@
+//Update record request
+PATCH /legacy/1 HTTP/1.1
+Host: localhost:8090
+Content-Type: application/json
+Content-Length: 119
+
+{
+  "id": 1,
+  "type": "TYPE5",
+  "businessValue": "TYPE5",
+  "createdAt" : "2016-06-22T19:10:25.000000"
+
+}

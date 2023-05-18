@@ -1,0 +1,78 @@
+version: '3'
+services:
+
+  etl-app:
+    build:
+      context: ./etl-app/etl-app
+    container_name: etl-app
+    depends_on:
+      - etl-db
+      - kafka
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://etl-db:5432/etl_app_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    ports:
+      - '8080:8080'
+
+  legacy-app:
+    build:
+      context: ./legacy-app/legacy-app
+    container_name: legacy-app
+    depends_on:
+      - legacy-db
+      - kafka
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://legacy-db:5432/legacy_app_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - SERVER_PORT=8090
+    ports:
+      - '8090:8090'
+
+  etl-db:
+    image: 'postgres:14-alpine'
+    container_name: etl-db
+    environment:
+      - POSTGRES_DB=etl_app_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - '5432:5432'
+
+  legacy-db:
+    image: 'postgres:14-alpine'
+    container_name: legacy-db
+    environment:
+      - POSTGRES_DB=legacy_app_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+    ports:
+      - '2345:5432'
+
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - '9093:9093'
+    hostname: kafka
+    environment:
+      KAFKA_LISTENERS: LISTENER_INSIDE://0.0.0.0:29092, LISTENER_HOST://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: LISTENER_INSIDE://kafka:29092, LISTENER_HOST://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_INSIDE:PLAINTEXT, LISTENER_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_INSIDE
+      KAFKA_ADVERTISED_HOST_NAME: kafka
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: "test_topic:1:1"
+
+    depends_on:
+      - zookeeper
+    volumes:
+      - ./:/etc/kafka
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - '2181:2181'
+
