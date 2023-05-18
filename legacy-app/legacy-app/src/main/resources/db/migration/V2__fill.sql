@@ -1,0 +1,1 @@
+INSERT INTO legacy_app_table (id, type, business_value, created_at, updated_at) VALUES (1, 'TYPE1', 'TYPE1', '2016-06-22 19:10:25-07', '2016-07-22 19:10:25-07');

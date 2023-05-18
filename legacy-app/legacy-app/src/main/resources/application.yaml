@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: legacy-app
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:2345/legacy_app_db
+    username: postgres
+    password: password
+  flyway:
+    enabled: true
+    schemas: legacy_app
+  kafka:
+    bootstrap-servers: ${kafka_bootstrap_servers:localhost:9092}
+
+server:
+    port: 8090
+
+test:
+  topic: test_topic
+
+

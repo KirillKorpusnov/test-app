@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: legacy-app
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/etl_app_db
+    username: postgres
+    password: password
+  flyway:
+    enabled: true
+    schemas: etl_app
+  kafka:
+    bootstrap-servers: ${kafka_bootstrap_servers:localhost:9092}
+
+server:
+    port: 8080
+
+test:
+  groupId: test
+
+logging:
+  level:
+    org:
+      slf4j:
+        debug
+
